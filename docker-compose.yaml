@@ -1,0 +1,26 @@
+services:
+
+  lldap:
+    image: lldap/lldap:stable
+    ports:
+      - "389:3890"
+      - "636:6360"
+      - "17170:17170"
+    volumes:
+      - "./lldap_data:/data"
+      - ./certs:/etc/certs
+    environment:
+      - UID=1000
+      - GID=1000
+      - TZ=America/Chicago
+      - LLDAP_JWT_SECRET=you-really-need-to-change-this
+      - LLDAP_KEY_SEED=also-change-this-too
+      - LLDAP_LDAP_BASE_DN=dc=example,dc=com
+      # If using LDAPS, set enabled true and configure cert and key path
+      - LLDAP_LDAPS_OPTIONS__ENABLED=true
+      - LLDAP_LDAPS_OPTIONS__CERT_FILE=/certs/fullchain.pem
+      - LLDAP_LDAPS_OPTIONS__KEY_FILE=/certs/privkey.pem
+      # You can also set a different database:
+      # - LLDAP_DATABASE_URL=mysql://mysql-user:password@mysql-server/my-database
+      # - LLDAP_DATABASE_URL=postgres://postgres-user:password@postgres-server/my-database
+      - LLDAP_LDAP_USER_PASS=changeme

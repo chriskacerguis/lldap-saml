@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    network_mode: service:lldap
+    volumes:
+      - ../..:/workspaces:cached
+    env_file:
+      - .env.development
+      
+  postgres:
+    image: postgres:16.2-alpine
+    network_mode: service:lldap
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env.development
+
+  redis:
+    image: redis:7.2-alpine
+    network_mode: service:lldap
+    volumes:
+      - redis_data:/data
+    env_file:
+      - .env.development
+
+  lldap:
+    image: lldap/lldap:stable
+    volumes:
+      - "lldap_data:/data"
+    env_file:
+      - .env.development
+    environment:
+      - UID=1000
+      - GID=1000
+      - TZ=America/Chicago
+      - LLDAP_JWT_SECRET=development-only-change-this-in-prod
+      - LLDAP_KEY_SEED=development-only-change-this-in-prod-too
+      - LLDAP_LDAP_BASE_DN=dc=example,dc=com
+      # If using LDAPS, set enabled true and configure cert and key path
+      - LLDAP_LDAPS_OPTIONS__ENABLED=true
+      - LLDAP_LDAPS_OPTIONS__CERT_FILE=/certs/fullchain.pem
+      - LLDAP_LDAPS_OPTIONS__KEY_FILE=/certs/privkey.pem
+      # You can also set a different database:
+      # - LLDAP_DATABASE_URL=mysql://mysql-user:password@mysql-server/my-database
+      # - LLDAP_DATABASE_URL=postgres://postgres-user:password@postgres-server/my-database
+      - LLDAP_LDAP_USER_PASS=changeme
+
+volumes:
+  postgres_data:
+  redis_data:
+  lldap_data:

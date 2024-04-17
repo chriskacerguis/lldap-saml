@@ -1,0 +1,18 @@
+{
+  "name": "LLDAP SAML2",
+  "customizations": {},
+  "dockerComposeFile": "docker-compose.yml",
+  "forwardPorts": [3890, 5432, 6360, 6379, 17170],
+  "portsAttributes": {
+    "3890": { "label": "Ldap" },
+    "5432": { "label": "Postgres" },
+    "6360": { "label": "ldaps" },
+    "6379": { "label": "Redis" },
+    "9229": { "label": "NestJS Debugger" },
+    "17170": { "label": "Ldap UI" }
+  },
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "postStartCommand": "bash .devcontainer/postStart.sh",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+}
